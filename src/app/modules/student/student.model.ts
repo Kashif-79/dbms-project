@@ -4,13 +4,22 @@ import { TStudent } from "./student.interface.js";
 const createStudentTable = async () => {
   try {
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS students (
-        id INT PRIMARY KEY AUTO_INCREMENT,
-        name VARCHAR(100),
-        email VARCHAR(100) UNIQUE NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-      )
+     CREATE TABLE IF NOT EXISTS students (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     first_name VARCHAR(50) NOT NULL,
+     middle_name VARCHAR(50),
+     last_name VARCHAR(50) NOT NULL,
+     email VARCHAR(100) UNIQUE NOT NULL,
+     phone VARCHAR(20),
+     department VARCHAR(100),
+     roll_no VARCHAR(50) UNIQUE,
+     date_of_birth DATE,
+     gender ENUM('Male', 'Female', 'Other'),
+     address TEXT,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
     `);
     console.log("✅ Students table ready!");
   } catch (error) {
@@ -34,9 +43,24 @@ const getAllStudents = async () => {
   return rows;
 };
 
+const deleteStudent = async (id: Number) => {
+  const [result] = await pool.query("DELETE FROM students WHERE id = ?", [id]);
+  return result;
+};
+
+const updateStudent = async (id: number, payload: Partial<TStudent>) => {
+  const [result] = await pool.query("UPDATE students SET ? WHERE id = ?", [
+    payload,
+    id,
+  ]);
+  return result;
+};
+
 export const StudentModel = {
   createStudentTable,
   createStudent,
   getStudentById,
-  getAllStudents, // Add this
+  getAllStudents,
+  deleteStudent,
+  updateStudent,
 };

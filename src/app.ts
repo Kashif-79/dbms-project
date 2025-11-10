@@ -1,14 +1,14 @@
 import express from "express";
 import cors from "cors";
 import { pool } from "./app/config/index.js";
-import { StudentRoutes } from "./app/modules/student/student.routes.js";
+import router from "./app/routes/index.js";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/api/students", StudentRoutes);
+app.use("/api", router);
 
 app.get("/", async (_req, res) => {
   try {
